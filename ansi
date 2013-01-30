@@ -42,7 +42,7 @@ astart() {
     bgwhite) e=[47m;;
 
     *)
-      echo "Error: unknown ansi $1"
+      echo "Error: unknown ansi $1" >&2
       return 1
       ;;
   esac
@@ -65,7 +65,7 @@ astop() {
       ;;
 
     *)
-      echo "Error: unknown ansi $1"
+      echo "Error: unknown ansi $1" >&2
       return 1
       ;;
   esac
