@@ -13,8 +13,8 @@ For details see http://en.wikipedia.org/wiki/ANSI_escape_code .
 Quick install:
 
     wget https://github.com/leoboiko/ansi/raw/master/ansi
-    mv ansi /usr/local/bin/ansi
-    chmod a+rx /usr/local/bin/ansi
+    sudo mv ansi /usr/local/bin/ansi
+    sudo chmod a+rx /usr/local/bin/ansi
 
 Sample usage:
 
