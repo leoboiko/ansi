@@ -97,7 +97,7 @@ attrs() {
     case "$1" in
       --) shift; break;;
       -*) 
-        the_attrs="$the_attrs $(echo -n $1|sed -e s/^.//)"
+        the_attrs="$the_attrs `echo -n $1|sed -e s/^.//`"
         shift
         ;;
       *) break;;
