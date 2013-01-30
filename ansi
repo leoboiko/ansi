@@ -97,13 +97,15 @@ attrs() {
     case "$1" in
       --) shift; break;;
       -*) 
-        the_attrs="$the_attrs `echo -n $1|sed -e s/^.//`"
+        the_attrs="`echo -n $1|sed -e s/^.//` $the_attrs"
         shift
         ;;
       *) break;;
     esac
   done
 
+  # workaround for certain dash behavior; remove trailing spaces
+  the_attrs="`echo -n "$the_attrs" | sed -e 's/ *$//' `"
   for attr in $the_attrs; do
     astart $attr
   done
