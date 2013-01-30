@@ -7,6 +7,8 @@
 # with -h for command help.
 #
 # For details see http://en.wikipedia.org/wiki/ANSI_escape_code .
+#
+# Project page: https://github.com/leoboiko/ansi/
 
 scriptname=ansi
 if [ "`basename $0`" = $scriptname ]; then
