@@ -1,0 +1,198 @@
+#!/bin/sh
+# Shell script to print console text with ANSI colors and attributes.
+#
+# There's a lot of shell scripts to print console text with colors and 
+# ANSI attributes, but this is mine.  It's mostly POSIX (runs fine on 
+# bash and dash), and can be used as a command or as a library.  Call 
+# with -h for command help.
+#
+# For details see http://en.wikipedia.org/wiki/ANSI_escape_code .
+
+scriptname=ansi
+if [ "`basename $0`" = $scriptname ]; then
+  script=1
+else
+  unset script
+fi
+
+# print escape sequence to start an ansi feature.
+astart() {
+  case "$1" in
+    bold) e=[1m;;
+    underline) e=[4m;;
+    blink) e=[5m;;
+    reverse) e=[7m;;
+
+    black) e=[30m;;
+    red) e=[31m;;
+    green) e=[32m;;
+    yellow) e=[33m;;
+    blue) e=[34m;;
+    magenta) e=[35m;;
+    cyan) e=[36m;;
+    white) e=[37m;;
+
+    bgblack) e=[40m;;
+    bgred) e=[41m;;
+    bggreen) e=[42m;;
+    bgyellow) e=[43m;;
+    bgblue) e=[44m;;
+    bgmagenta) e=[45m;;
+    bgcyan) e=[46m;;
+    bgwhite) e=[47m;;
+
+    *)
+      echo "Error: unknown ansi $1"
+      return 1
+      ;;
+  esac
+  echo -n "$e"
+}
+
+# print escape sequence to stop an ansi feature.
+astop() {
+  case "$1" in
+    blink) e=[25m;;
+    bold) e=[22m;;
+    reverse) e=[27m;;
+    underline) e=[24m;;
+
+    color|black|red|green|yellow|blue|magenta|cyan|white)
+      e=[39m
+      ;;
+    bgcolor|bgblack|bgred|bggreen|bgyellow|bgblue|bgmagenta|bgcyan|bgwhite)
+      e=[49m
+      ;;
+
+    *)
+      echo "Error: unknown ansi $1"
+      return 1
+      ;;
+  esac
+  echo -n "$e"
+}
+
+# Print arguments 2..n surrounded by start and stop of ansi feature.
+#
+# Usage: awrap attribute string...
+awrap() {
+  attr="$1"
+  shift
+  echo -n "`astart $attr`$*`astop $attr`"
+}
+
+# Starts many attributes, print args, and stop all attributes.
+# Attributes are noted like options, i.e. starting with the 
+# hyphen-minus character '-'.
+#
+# Attribute processing stop at first non-option argument. Use
+# '--' (no quotes) to force it to stop.
+#
+# For valid attributes, see astart() above.
+#
+# Usage: attrs -attr1 -attr2 ... attrn arg1 arg2 ... argn
+attrs() {
+  the_attrs=''
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      --) shift; break;;
+      -*) 
+        the_attrs="$the_attrs $(echo -n $1|sed -e s/^.//)"
+        shift
+        ;;
+      *) break;;
+    esac
+  done
+
+  for attr in $the_attrs; do
+    astart $attr
+  done
+
+  echo -n "$*"
+
+  for attr in $the_attrs; do
+    astop $attr
+  done
+}
+
+
+if ! [ $script ]; then
+  return 0
+fi
+
+
+usage()
+{
+  echo \
+"$scriptname: Prints text with ANSI attributes (color, bold etc).
+  
+Usage: $scriptname [-n] -attr1 -attr2... string...
+
+Options:
+  -h: this message.
+  -n: don't print a newline.
+
+Attributes:
+  -bold
+  -underline
+  -blink
+  -reverse
+
+  -black
+  -red
+  -green
+  -yellow
+  -blue
+  -magenta
+  -cyan
+  -white
+
+  -bgblack
+  -bgred
+  -bggreen
+  -bgyellow
+  -bgblue
+  -bgmagenta
+  -bgcyan
+  -bgwhite
+
+Options MUST precede attributes, and attributes strings.
+
+To force stop attribute processing, use two hyphens '--' (no 
+quotes).
+
+This script will print the attributes before the string,
+and also the relevant stop-sequences after it.
+
+ 
+Examples:
+  ansi -red -bold Error: colorblind\\!
+
+  echo -n normal; ansi -n -cyan andblue; echo andnormal
+
+  ansi -magenta -- -hyphen in start
+
+For shell programming, consider sourcing it as a library; see 
+the source code.
+"
+
+  exit $1
+}
+
+attr=''
+newline=y
+while [ $# -gt 0 ]; do
+  case "$1" in
+    -h|--help) usage;;
+    -n) unset newline; shift;;
+    *) break;;
+  esac
+done
+
+if ! [ "$1" ]; then
+  usage 1
+fi
+
+attrs "$@"
+
+[ $newline ] && echo
