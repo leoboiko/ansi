@@ -158,12 +158,11 @@ Attributes:
 
 Options MUST precede attributes, and attributes strings.
 
-To force stop attribute processing, use two hyphens '--' (no 
+To force-stop attribute processing, use two hyphens '--' (no 
 quotes).
 
-This script will print the attributes before the string,
-and also the relevant stop-sequences after it.
-
+This script will print the ANSI start sequences for each attribute,
+then the arguments, and then the corresponding ANSI stop sequences.
  
 Examples:
   ansi -red -bold Error: colorblind\\!
@@ -172,8 +171,8 @@ Examples:
 
   ansi -magenta -- -hyphen in start
 
-For shell programming, consider sourcing it as a library; see 
-the source code.
+For shell programming, consider sourcing it as a library; see the
+source code.
 "
 
   exit $1
