@@ -10,3 +10,11 @@ with -h for command help.
 
 For details see http://en.wikipedia.org/wiki/ANSI_escape_code .
 
+Sample usage:
+
+    ansi -red -bold Error: colorblind\!
+
+    echo -n normal; ansi -n -cyan andblue; echo andnormal
+
+    ansi -magenta -- -hyphen in start
+
